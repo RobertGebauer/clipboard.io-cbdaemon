@@ -3,12 +3,18 @@ const io = require('socket.io')
 const ne = require("nanoevents")
 const uuid = require("uuid")
 const getPort = require('get-port')
+const open = require('open')
+const args = require('minimist')(process.argv.slice(2), {
+    default: {
+        url: "https://clipscape.io"
+    }
+});
 
 const emitter = ne.createNanoEvents()
 const clipboardSessionId = uuid.v4()
+const randomRoomId = uuid.v4()
 
 getPort().then(port => {
-    console.log(port)
     io(port, {}).on('connection', client => {
         client.on('helloClipboard', (uuid) => {
             if (uuid === clipboardSessionId) {
@@ -18,11 +24,9 @@ getPort().then(port => {
         })
 
     })
+
+    open(args.url + "/room/" + randomRoomId + "?sid=" + clipboardSessionId + "&sport=" + port)
 })
-
-
-console.log(clipboardSessionId)
-
 
 let clipboard = undefined
 setInterval(
@@ -33,7 +37,7 @@ setInterval(
                 emitter.emit("clipboard-changed", text)
             }
         }).catch((e) => {
-            // no-op by intention
+            // no-op by intention; only text supported
         })
 
     }, 500
