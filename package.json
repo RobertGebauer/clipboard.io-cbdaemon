@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node src/app",
     "build-exe": "nexe src/app -o dist/clipscape.io-cbdaemon.exe",
-    "_deploy-exe": "npm run build-exe && bash ./deploy"
+    "_deploy-exe": "npm run build-exe && bash ./_deploy"
   },
   "dependencies": {
     "clipboardy": "^2.3.0",
