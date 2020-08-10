@@ -29,16 +29,18 @@ getPort().then(port => {
 })
 
 let clipboard = undefined
-setInterval(
-    () => {
-        clipboardy.read().then((text) => {
-            if (clipboard !== text) {
-                clipboard = text
-                emitter.emit("clipboard-changed", text)
-            }
-        }).catch((e) => {
-            // no-op by intention; only text supported
-        })
 
-    }, 500
-)
+const clipboardPollFunction = () => {
+    clipboardy.read().then((text) => {
+        if (clipboard !== text) {
+            clipboard = text
+            emitter.emit("clipboard-changed", text)
+        }
+    }).catch((e) => {
+        // no-op by intention
+    }).finally(() => {
+        setTimeout(clipboardPollFunction, 500)
+    })
+}
+
+clipboardPollFunction()

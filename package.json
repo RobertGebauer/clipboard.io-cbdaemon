@@ -4,6 +4,12 @@
   "description": "",
   "main": "app.js",
   "author": "Robert Gebauer",
+  "private": true,
+  "scripts": {
+    "start": "node src/app",
+    "build-exe": "nexe src/app -o dist/clipscape.io-cbdaemon.exe",
+    "_deploy-exe": "npm run build-exe && bash ./deploy"
+  },
   "dependencies": {
     "clipboardy": "^2.3.0",
     "get-port": "^5.1.1",
