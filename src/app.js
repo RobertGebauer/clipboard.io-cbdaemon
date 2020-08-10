@@ -6,23 +6,30 @@ const getPort = require('get-port')
 const open = require('open')
 const args = require('minimist')(process.argv.slice(2), {
     default: {
-        url: "https://clipscape.io"
+        url: "https://clipscape.io",
+        sessionId: uuid.v4()
     }
 });
 
 const emitter = ne.createNanoEvents()
-const clipboardSessionId = uuid.v4()
+const clipboardSessionId = args.sessionId
 const randomRoomId = uuid.v4()
 
-getPort().then(port => {
+getPort({port: 3000}).then(port => {
     io(port, {}).on('connection', client => {
-        client.on('helloClipboard', (uuid) => {
-            if (uuid === clipboardSessionId) {
+        client.on('hello-clipboard', (uuid) => {
+            if (uuid == clipboardSessionId) {
                 const unbind = emitter.on("clipboard-changed", (text) => client.emit("clipboard-changed", text))
                 client.on("disconnecting", () => unbind())
             }
         })
 
+        client.on('change-clipboard', (data) => {
+            if (!!data.text && data.sessionId == clipboardSessionId) {
+                clipboard = data.text
+                clipboardy.write(data.text)
+            }
+        })
     })
 
     open(args.url + "/room/" + randomRoomId + "?sid=" + clipboardSessionId + "&sport=" + port)
