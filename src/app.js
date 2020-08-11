@@ -52,7 +52,7 @@ const clipboardPollFunction = () => {
     }).catch((e) => {
         // no-op by intention
     }).finally(() => {
-        setTimeout(clipboardPollFunction, 500)
+        setTimeout(clipboardPollFunction, 1000)
     })
 }
 
