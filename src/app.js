@@ -4,6 +4,7 @@ const ne = require("nanoevents")
 const uuid = require("uuid")
 const getPort = require('get-port')
 const open = require('open')
+const ung = require("unique-names-generator")
 const args = require('minimist')(process.argv.slice(2), {
     default: {
         url: "https://clipscape.io",
@@ -13,7 +14,12 @@ const args = require('minimist')(process.argv.slice(2), {
 
 const emitter = ne.createNanoEvents()
 const clipboardSessionId = args.sessionId
-const randomRoomId = uuid.v4()
+const randomRoomId = ung.uniqueNamesGenerator({
+    dictionaries: [ung.colors, ung.animals],
+    length: 2,
+    separator: "",
+    style: "capital"
+})
 
 getPort({port: 3000}).then(port => {
     io(port, {}).on('connection', client => {
