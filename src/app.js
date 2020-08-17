@@ -8,7 +8,8 @@ const ung = require("unique-names-generator")
 const args = require('minimist')(process.argv.slice(2), {
     default: {
         url: "https://clipscape.io",
-        sessionId: uuid.v4()
+        sessionId: uuid.v4(),
+        debug: false
     }
 });
 
@@ -38,7 +39,11 @@ getPort({port: 3000}).then(port => {
         })
     })
 
-    open(args.url + "/room/" + randomRoomId + "?sid=" + clipboardSessionId + "&sport=" + port)
+    let url = args.url + "/room/" + randomRoomId + "?sid=" + clipboardSessionId + "&sport=" + port
+    if (!!args.debug) {
+        url += "&debug=1"
+    }
+    open(url)
 })
 
 let clipboard = undefined

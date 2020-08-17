@@ -7,6 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node src/app",
+    "start-develop": "node src/app --url http://localhost:8080 --sessionId 5 --debug",
     "build-exe": "nexe src/app -o dist/clipscape.io-cbdaemon.exe",
     "_deploy-exe": "npm run build-exe && bash ./_deploy"
   },
