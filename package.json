@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "start": "node src/app",
-    "start-develop": "node src/app --url http://localhost:8080 --sessionId 5 --debug",
+    "start-develop": "nodemon src/app --url http://localhost:8080 --sessionId 5 --debug",
     "package-exe": "nexe src/app -o dist/clipscape.io/clipscape.io.exe && cp node_modules/clipboardy/fallbacks dist/ -r && npm-build-zip --source dist --destination dist"
   },
   "dependencies": {
@@ -18,7 +18,9 @@
     "open": "^7.1.0",
     "socket.io": "^2.3.0",
     "unique-names-generator": "^4.3.0",
-    "uuid": "^8.3.0"
+    "uuid": "^8.3.0",
+    "kbpgp": "^2.1.15",
+    "lodash": "4.17.20"
   },
   "devDependencies": {
     "npm-build-zip": "^1.0.2"

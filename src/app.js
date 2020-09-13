@@ -4,7 +4,9 @@ const ne = require("nanoevents")
 const uuid = require("uuid")
 const getPort = require('get-port')
 const open = require('open')
-const ung = require("unique-names-generator")
+const ung = require("unique-names-generator");
+const KeyManager = require('./KeyManager');
+const _ = require("lodash")
 const args = require('minimist')(process.argv.slice(2), {
     default: {
         url: "https://clipscape.io",
@@ -22,19 +24,58 @@ const randomRoomId = ung.uniqueNamesGenerator({
     style: "capital"
 })
 
-getPort({port: 3000}).then(port => {
-    io(port, {}).on('connection', client => {
-        client.on('hello-clipboard', (uuid) => {
-            if (uuid == clipboardSessionId) {
-                const unbind = emitter.on("clipboard-changed", (text) => client.emit("clipboard-changed", text))
-                client.on("disconnecting", () => unbind())
-            }
-        })
+let clientCount = 0
 
-        client.on('change-clipboard', (data) => {
-            if (!!data.text && data.sessionId == clipboardSessionId) {
-                clipboard = data.text
-                clipboardy.write(data.text)
+getPort({ port: 3000 }).then(port => {
+    io(port, {}).on('connection', client => {
+        // client is an application that connects to this to be informed about clipboard changes or
+        // to trigger a clipboard change; typically, this is the clipscape.io web application
+
+        client.on('hello-clipboard', (data) => {
+            if (data.sid == clipboardSessionId) {
+                // someone sent "hello" with known UUID
+                clientCount++
+
+                // init key manager
+                const keyManager = new KeyManager()
+                keyManager.init(data.pkey).then((keys) => {
+
+                    // register client for clipboard changes
+                    const unbind = emitter.on("clipboard-changed", (text) => {
+                        keyManager.encrypt(text).then((encryptedText) => {
+                            client.emit("clipboard-changed", encryptedText)
+                        })
+                    })
+
+                    // and unbind if client disconnects
+                    client.on("disconnecting", () => { 
+                        unbind() 
+                        clientCount--
+
+                        if (clientCount === 0) {
+                            process.exit(0)
+                        }
+                    })
+
+                    // signal client ready-status with keys
+                    // TODO may be bad idea to send private key back to client...
+                    client.emit("hello-client", keys)
+
+                    // allow clipboard changes triggered from client
+                    client.on('change-clipboard', (data) => {
+                        if (!!data.content && data.sessionId == clipboardSessionId) {
+                            keyManager.decrypt(data.content).then((text) => {
+                                clipboard = text
+                                clipboardy.write(text)
+                            })
+                        }
+                    })
+
+                    // accept partner changes from client
+                    client.on("foreign-keys", (partnerPublicKeys) => {
+                        keyManager.replaceForeignKeyManagers(partnerPublicKeys)
+                    })
+                })
             }
         })
     })
@@ -46,6 +87,7 @@ getPort({port: 3000}).then(port => {
     open(url)
 })
 
+// local var to save current clipboard to be able to detect changes
 let clipboard = undefined
 
 const clipboardPollFunction = () => {
