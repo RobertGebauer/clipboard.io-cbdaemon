@@ -1,4 +1,4 @@
-const clipboardy = require('clipboardy');
+const clipboardy = require("./clipboard/clipboard.js")
 const io = require('socket.io')
 const ne = require("nanoevents")
 const uuid = require("uuid")
