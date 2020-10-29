@@ -11,13 +11,7 @@ const args = require('minimist')(process.argv.slice(2), {
     default: {
         url: "https://clipscape.io",
         sessionId: uuid.v4(),
-        debug: false,
-        room: ung.uniqueNamesGenerator({
-            dictionaries: [ung.colors, ung.animals],
-            length: 2,
-            separator: "",
-            style: "capital"
-        })
+        debug: false
     }
 });
 
@@ -80,7 +74,7 @@ getPort({ port: 3000 }).then(port => {
         })
     })
 
-    let url = args.url + "/room/" + args.room + "?sid=" + clipboardSessionId + "&sport=" + port
+    let url = args.url + "/room/?sid=" + clipboardSessionId + "&sport=" + port
     if (!!args.debug) {
         url += "&debug=1"
     }
