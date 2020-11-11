@@ -6,7 +6,7 @@ const platformLib = (() => {
         case 'darwin':
             return undefined // TODO
         case 'win32':
-            return windows  // TODO
+            return windows
         case 'android':
             return undefined  // TODO
         default:

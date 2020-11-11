@@ -16,6 +16,6 @@ async function echoReadable(readable) {
 module.exports = {
     copy: text => childProcess.spawn('clip').stdin.end(text),
     paste: () => {
-        return echoReadable(childProcess.spawn('powershell', ['-command "Get-Clipboard"'], {windowsVerbatimArguments: true, stdio: ['ignore', 'pipe', process.stderr]}).stdout)
+        return echoReadable(childProcess.spawn('powershell', ['-command "Get-Clipboard"'], {windowsVerbatimArguments: true, stdio: ['ignore', 'pipe']}).stdout)
     }
 };

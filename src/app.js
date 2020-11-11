@@ -46,7 +46,7 @@ getPort({ port: 3000 }).then(port => {
                         unbind() 
                         clientCount--
 
-                        if (clientCount === 0) {
+                        if (clientCount === 0 && !args.debug) {
                             process.exit(0)
                         }
                     })
