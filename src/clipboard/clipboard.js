@@ -1,10 +1,11 @@
 const windows = require('./windows.js')
+const macos = require('./macos.js')
 const isWSL = require('is-wsl');
 
 const platformLib = (() => {
     switch (process.platform) {
         case 'darwin':
-            return undefined // TODO
+            return macos
         case 'win32':
             return windows
         case 'android':
