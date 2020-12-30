@@ -4,9 +4,8 @@ const ne = require("nanoevents")
 const uuid = require("uuid")
 const getPort = require('get-port')
 const open = require('open')
-const ung = require("unique-names-generator");
 const KeyManager = require('./KeyManager');
-const _ = require("lodash")
+
 const args = require('minimist')(process.argv.slice(2), {
     default: {
         url: "https://clipscape.io",

@@ -1,5 +1,4 @@
-'use strict';
-const execa = require('execa');
+const execa = require('execa')
 
 const env = {
     ...process.env,
