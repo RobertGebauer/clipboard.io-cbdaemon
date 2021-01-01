@@ -1,4 +1,3 @@
-const childProcess = require('child_process')
 const execa = require('execa');
 const iconv = require("iconv-lite")
 
@@ -10,18 +9,15 @@ const env = {
 module.exports = {
   copy: (text) => {
     options = {
-      "encoding": "UTF8",
-      "input": Buffer.from(text, "UTF-8")
+      "input": Buffer.from(text, "UTF16")
     }
-    
-    execa('powershell -command "$INPUT | Set-Clipboard "', {...options, env } )
+
+    execa("clip", {...options, env })
   },
   paste: () => {
-    options = {
-      "encoding": "UTF8"
-    }
+    options = { }
     
-    const process = execa('powershell -command "[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding ; Get-Clipboard "', {...options, env } )
+    const process = execa('powershell -command "[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF16Encoding  ; Get-Clipboard "', {...options, env } )
     
     return new Promise((resolve, reject) => {
       process.then(result => {

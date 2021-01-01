@@ -13,6 +13,7 @@
   "dependencies": {
     "execa": "4.1.0",
     "get-port": "5.1.1",
+    "iconv-lite": "^0.6.2",
     "kbpgp": "2.1.15",
     "lodash": "4.17.20",
     "minimist": "1.2.5",
