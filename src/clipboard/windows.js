@@ -17,14 +17,14 @@ module.exports = {
   paste: () => {
     options = { }
     
-    const process = execa('powershell -command "[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF16Encoding  ; Get-Clipboard "', {...options, env } )
+    const process = execa('powershell -command "[console]::InputEncoding = [console]::OutputEncoding = New-Object System.Text.UTF8Encoding  ; Get-Clipboard "', {...options, env } )
     
     return new Promise((resolve, reject) => {
       process.then(result => {
         if (result instanceof Error) {
           reject()
         } else {
-          resolve(result.stdout)
+          resolve(Buffer.from(result.stdout, "UTF8").toString())
         }
       })
     })
