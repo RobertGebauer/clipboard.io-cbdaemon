@@ -8,11 +8,15 @@ const env = {
 
 module.exports = {
   copy: (text) => {
-    options = {
-      "input": Buffer.from(text, "UTF16")
-    }
+    const buffer = Buffer.from(text, "UTF8")
 
-    execa("clip", {...options, env })
+    options = {
+      "encoding": "UTF8",
+      "input": Array.prototype.slice.call(buffer).join(",")
+    }
+    
+    execa('powershell -command " $Bytes=$INPUT -Split \',\' ; [System.Text.Encoding]::UTF8.GetString($Bytes) | Set-Clipboard " ', {...options, env } )
+  
   },
   paste: () => {
     options = { }
